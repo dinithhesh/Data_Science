@@ -1,0 +1,100 @@
+{
+  "default_deployment": {
+    "cpu_cores": 1,
+    "memory_gb": 2,
+    "auth_enabled": true,
+    "enable_app_insights": true,
+    "ssl_enabled": true,
+    "description": "Churn Prediction Model Deployment"
+  },
+  "model_specific_configs": {
+    "RandomForest": {
+      "cpu_cores": 2,
+      "memory_gb": 4,
+      "auth_enabled": true,
+      "enable_app_insights": true,
+      "ssl_enabled": true,
+      "description": "Random Forest Churn Prediction Model",
+      "tags": {
+        "model_type": "RandomForest",
+        "complexity": "high",
+        "resource_intensive": "true"
+      },
+      "monitoring": {
+        "interval_minutes": 30,
+        "thresholds": {
+          "max_error_rate": 0.05,
+          "max_latency_ms": 1000,
+          "max_memory_mb": 800,
+          "max_prediction_time_ms": 500
+        }
+      }
+    },
+    "XGBoost": {
+      "cpu_cores": 2,
+      "memory_gb": 3,
+      "auth_enabled": true,
+      "enable_app_insights": true,
+      "ssl_enabled": true,
+      "description": "XGBoost Churn Prediction Model",
+      "tags": {
+        "model_type": "XGBoost",
+        "complexity": "medium",
+        "efficient": "true"
+      },
+      "monitoring": {
+        "interval_minutes": 45,
+        "thresholds": {
+          "max_error_rate": 0.06,
+          "max_latency_ms": 800,
+          "max_memory_mb": 600,
+          "max_prediction_time_ms": 300
+        }
+      }
+    },
+    "LogisticRegression": {
+      "cpu_cores": 1,
+      "memory_gb": 2,
+      "auth_enabled": true,
+      "enable_app_insights": true,
+      "ssl_enabled": true,
+      "description": "Logistic Regression Churn Model",
+      "tags": {
+        "model_type": "LogisticRegression",
+        "complexity": "low",
+        "fast_inference": "true"
+      },
+      "monitoring": {
+        "interval_minutes": 60,
+        "thresholds": {
+          "max_error_rate": 0.08,
+          "max_latency_ms": 500,
+          "max_memory_mb": 300,
+          "max_prediction_time_ms": 100
+        }
+      }
+    }
+  },
+  "deployment_weights": {
+    "RandomForest": 1.0,
+    "XGBoost": 0.9,
+    "LogisticRegression": 0.8
+  },
+  "monitoring": {
+    "interval_minutes": 60,
+    "retention_days": 30,
+    "alert_channels": ["email", "slack"],
+    "thresholds": {
+      "max_error_rate": 0.1,
+      "max_latency_ms": 2000,
+      "min_throughput": 10
+    }
+  },
+  "scaling": {
+    "max_instances": 10,
+    "min_instances": 1,
+    "target_utilization": 70,
+    "scale_out_cooldown": 300,
+    "scale_in_cooldown": 600
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "azure_ml": {
+    "workspace_name": "ml-eastus-workspace",
+    "subscription_id": "Azure subscription 1",
+    "resource_group": "ml-free1-rg",
+    "location": "eastus"
+  },
+  "azure_storage": {
+    "connection_string": "DefaultEndpointsProtocol=https;AccountName=yourstorageaccount;AccountKey=your-storage-account-key;EndpointSuffix=core.windows.net",
+    "container_name": "customerdata",
+    "blob_name": "marketing_campaign.csv"
+  },
+  "data_processing": {
+    "input_data_path": "data/marketing_campaign.csv",
+    "output_data_path": "data/processed/",
+    "recency_threshold": 90,
+    "test_size": 0.2,
+    "random_state": 42,
+    "scale_features": true
+  },
+  "clustering": {
+    "max_clusters": 8,
+    "random_state": 42,
+    "output_path": "output/clustering/",
+    "plot_elbow_method": true,
+    "plot_cluster_distribution": true
+  },
+  "model_training": {
+    "models": ["logistic_regression", "random_forest", "xgboost"],
+    "hyperparameter_tuning": true,
+    "tuning_model": "xgboost",
+    "cv_folds": 5,
+    "random_state": 42,
+    "output_path": "models/",
+    "save_visualizations": true
+  },
+  "deployment": {
+    "model_name": "customer-churn-predictor",
+    "model_version": "1.0.0",
+    "compute_target": "aci-customer-churn",
+    "cpu_cores": 1,
+    "memory_gb": 2,
+    "auth_enabled": true,
+    "scoring_timeout_ms": 60000,
+    "max_concurrent_requests": 10,
+    "environment_name": "customer-churn-env",
+    "environment_version": "1.0.0"
+  },
+  "hyperparameters": {
+    "logistic_regression": {
+      "C": [0.01, 0.1, 1, 10, 100],
+      "penalty": ["l1", "l2"],
+      "solver": ["liblinear"]
+    },
+    "random_forest": {
+      "n_estimators": [50, 100, 200],
+      "max_depth": [10, 20, null],
+      "min_samples_split": [2, 5, 10]
+    },
+    "xgboost": {
+      "n_estimators": [50, 100, 200],
+      "max_depth": [3, 6, 9],
+      "learning_rate": [0.01, 0.1, 0.2],
+      "subsample": [0.8, 0.9, 1.0]
+    }
+  },
+  "monitoring": {
+    "enable_monitoring": true,
+    "data_collection": {
+      "enabled": true,
+      "sampling_rate": 0.1
+    },
+    "alerts": {
+      "enable_alerts": true,
+      "accuracy_threshold": 0.7,
+      "latency_threshold_ms": 1000,
+      "error_rate_threshold": 0.05
+    }
+  },
+  "api": {
+    "swagger_enabled": true,
+    "cors_enabled": true,
+    "max_request_size": 1048576,
+    "log_level": "INFO"
+  },
+  "features": {
+    "rfm_features": ["Recency", "Frequency", "Monetary"],
+    "categorical_features": ["Education", "Marital_Status"],
+    "numerical_features": ["Income", "MntWines", "MntMeatProducts", "NumWebPurchases"],
+    "target_variable": "churn"
+  },
+  "paths": {
+    "raw_data": "data/raw/",
+    "processed_data": "data/processed/",
+    "models": "models/",
+    "output": "output/",
+    "logs": "logs/",
+    "notebooks": "notebooks/"
+  },
+  "environment": {
+    "python_version": "3.8",
+    "conda_dependencies": [
+      "python=3.8",
+      "pip=21.2.4",
+      "scikit-learn=1.0.2",
+      "xgboost=1.5.1",
+      "pandas=1.3.5",
+      "numpy=1.21.6",
+      "matplotlib=3.5.1",
+      "seaborn=0.11.2"
+    ],
+    "pip_dependencies": [
+      "azureml-core",
+      "azureml-defaults",
+      "azureml-telemetry",
+      "azureml-train-automl",
+      "azureml-widgets"
+    ]
+  }
+}
