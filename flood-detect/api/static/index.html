@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌊 Flood Event Prediction</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #00416a, #e4e5e6);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .btn-custom {
+      background-color: #00416a;
+      color: white;
+      border-radius: 0.5rem;
+      font-weight: bold;
+    }
+    .btn-custom:hover {
+      background-color: #006494;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card p-4 col-md-6 mx-auto">
+      <h2 class="text-center mb-4">🌊 Flood Prediction Dashboard</h2>
+      <form id="predictForm">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label>Precipitation (1h)</label>
+            <input type="number" step="0.01" id="precip_1h" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Slope</label>
+            <input type="number" step="0.01" id="slope" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Elevation</label>
+            <input type="number" step="0.01" id="elevation" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Timestamp</label>
+            <input type="number" step="1" id="timestamp" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Precipitation (24h)</label>
+            <input type="number" step="0.01" id="precip_24h" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Impervious Fraction</label>
+            <input type="number" step="0.01" id="impervious_frac" class="form-control" required>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-custom">Predict</button>
+        </div>
+      </form>
+
+      <div id="result" class="text-center mt-4"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("predictForm");
+    const resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        precip_1h: parseFloat(document.getElementById("precip_1h").value),
+        slope: parseFloat(document.getElementById("slope").value),
+        elevation: parseFloat(document.getElementById("elevation").value),
+        timestamp: parseFloat(document.getElementById("timestamp").value),
+        precip_24h: parseFloat(document.getElementById("precip_24h").value),
+        impervious_frac: parseFloat(document.getElementById("impervious_frac").value)
+      };
+
+      resultDiv.innerHTML = "<div class='text-info'>Predicting...</div>";
+
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error("Prediction failed");
+
+        const result = await response.json();
+        const isFlood = result.predicted_flood_event === 1;
+        resultDiv.innerHTML = `
+          <div class="alert ${isFlood ? 'alert-danger' : 'alert-success'} mt-3">
+            <h4>${isFlood ? '⚠️ Flood Expected!' : '✅ No Flood Predicted'}</h4>
+            <p>Probability: ${result.probability.toFixed(3)}</p>
+          </div>
+        `;
+      } catch (err) {
+        resultDiv.innerHTML = "<div class='text-danger'>Error: " + err.message + "</div>";
+      }
+    });
+  </script>
+</body>
+</html>
