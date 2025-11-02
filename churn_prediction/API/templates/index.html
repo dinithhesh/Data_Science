@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Churn Prediction Dashboard</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; text-align: center; padding: 40px; }
+        form { background: #fff; display: inline-block; padding: 30px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        input { margin: 10px; padding: 8px; width: 200px; }
+        button { background: #0078ff; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #005fcc; }
+        .result { margin-top: 30px; background: #e8f0fe; padding: 20px; border-radius: 8px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>📊 Customer Churn Prediction</h1>
+
+    <form method="post" action="/predict">
+        <input type="number" name="recency" step="0.1" placeholder="Recency (days)" required><br>
+        <input type="number" name="frequency" step="0.1" placeholder="Frequency (purchases)" required><br>
+        <input type="number" name="monetary" step="0.1" placeholder="Monetary (amount)" required><br>
+        <button type="submit">Predict Churn</button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        <h3>Prediction Result</h3>
+        <p><strong>Recency:</strong> {{ result.recency }}</p>
+        <p><strong>Frequency:</strong> {{ result.frequency }}</p>
+        <p><strong>Monetary:</strong> {{ result.monetary }}</p>
+        <p><strong>Churn Probability:</strong> {{ result.churn_prob }}</p>
+        <p><strong>Status:</strong> {{ result.label }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>
